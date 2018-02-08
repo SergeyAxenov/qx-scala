@@ -4,6 +4,8 @@
 
 Reads "transactions" from CSV file, generates 3 reports.
 
+**Note: transactions.txt is not in the repo. Provide your transaction file to test and run!** 
+
 Regarding rolling stat report:
 * Five days rolling window is used for the rolling stat report.
 * The rolling stat report can be generated in two modes: with and without partial first 5 days (use `-p` argument to run with partial)
