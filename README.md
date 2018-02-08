@@ -1,4 +1,6 @@
-# Few Scala demo cases 
+# Few Scala demo cases
+
+[![Build Status](https://travis-ci.org/SergeyAxenov/qx-scala.svg?branch=master)](https://travis-ci.org/SergeyAxenov/qx-scala) 
 
 Reads "transactions" from CSV file, generates 3 reports.
 
