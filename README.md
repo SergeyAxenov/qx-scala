@@ -20,9 +20,9 @@ To run the unit tests, you should run `sbt test`
 
 ## Running using SBT
 The output reports are stored in the project root:
-* dailyAmount.csv
-* accountAverage.csv
-* rollingStats.csv
+* **dailyAmount.csv**
+* **accountAverage.csv**
+* **rollingStats.csv** (or **rollingStats-withPartial.csv** with `-p` option)
 
 
 ### Running with default parameters

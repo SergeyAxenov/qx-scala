@@ -23,24 +23,27 @@ object QxApp extends App {
             Transaction(split(0), split(1), split(2).toInt, split(3), split(4).toDouble)
           }.toList
 
-          printToFile("dailyAmount.csv", (Unit) => dailyAmount(tnx),
-            (writer: PrintWriter) => (report: DailyAmountReport) => {
+          printToFile("dailyAmount.csv",
+            (writer: PrintWriter) => {
+              val report = dailyAmount(tnx).toSeq.sortBy(_.day)
               writer.println("Day,Total Value")
-              report.toSeq.sortBy(_.day).foreach(r => writer.println(s"${r.day},${r.totalAmount}"))
+              report.foreach(r => writer.println(s"${r.day},${r.totalAmount}"))
             })
 
-          printToFile("accountAverage.csv", (Unit) => accountAverageAmount(tnx),
-            (writer: PrintWriter) => (report: AccountAverageValueReport) => {
+          printToFile("accountAverage.csv",
+            (writer: PrintWriter) => {
+              val report = accountAverageAmount(tnx).toSeq.sortBy(_.accountId)
               writer.println("Account ID,AA Average Value,BB Average Value,CC Average Value,DD Average Value,EE Average Value,FF Average Value,GG Average Value")
-              report.toSeq.sortBy(_.accountId).foreach(r => {
+              report.foreach(r => {
                 writer.println(s"${r.accountId},${r.aaValue},${r.bbValue},${r.ccValue},${r.ddValue},${r.eeValue},${r.ffValue},${r.ggValue}")
               })
             })
 
-          printToFile("rollingStats.csv", (Unit) => rollingDailyAccountStat(tnx, params.rollingWindow, params.withPartial),
-            (writer: PrintWriter) => (report: DailyAccountStatReport) => {
+          printToFile(s"rollingStats${if (params.withPartial) "-withPartial" else ""}.csv",
+            (writer: PrintWriter) => {
+              val report = rollingDailyAccountStat(tnx, params.rollingWindow, params.withPartial).toSeq.sortBy(r => (r.day, r.accountId))
               writer.println("Day,Account ID,Maximum,Average,AA Total Value,CC Total Value,FF Total Value")
-              report.toSeq.sortBy(r => (r.day, r.accountId)).foreach(r => {
+              report.foreach(r => {
                 writer.println(s"${r.day},${r.accountId},${r.max},${r.avg},${r.aaValue},${r.ccValue},${r.ffValue}")
               })
             })
@@ -59,10 +62,10 @@ object QxApp extends App {
     }
   }
 
-  private def printToFile[A](fileName: String, generate: (Unit) => A, print: PrintWriter => A => Unit) = {
+  private def printToFile[A](fileName: String, print: PrintWriter => Unit) = {
     val printer = new PrintWriter(new FileWriter(fileName))
     try {
-      (generate andThen print(printer)) ()
+      print(printer)
       Console.println(s"Report ${fileName} has been generated")
     }
     finally
